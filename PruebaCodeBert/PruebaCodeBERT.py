@@ -1,10 +1,12 @@
 from transformers import RobertaTokenizer, RobertaForSequenceClassification, AutoTokenizer
 from git import Repo
 from tqdm import tqdm
+from collections import Counter
+from lime.lime_text import LimeTextExplainer
+import numpy as np
 import os
 import torch
 import csv
-from collections import Counter
 
 # Clonar el repositorio a analizar
 def clonar_repositorio(url, directorio_destino):
@@ -17,7 +19,7 @@ def clonar_repositorio(url, directorio_destino):
 clonar_repositorio("https://github.com/openemr/openemr.git", "repositorio_openemr")
 
 # Cargar modelo y tokenizador
-modelo_entrenado = "../EntrenamientoCodeBert/results5epocas/checkpoint-1626"
+modelo_entrenado = "../EntrenamientoCodeBert/results10epocas/checkpoint-5420"
 print("¿Directorio del modelo existe?", os.path.isdir(modelo_entrenado))
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
@@ -52,20 +54,58 @@ def leer_repositorio(carpeta):
     
     return archivos
 
+# Explicabilidad con LIME
+def explicabilidad(texts):
+    inputs = tokenizer(texts, return_tensors="pt", padding=True, truncation=True, max_length=512)
+    inputs = {k: v.to(device) for k, v in inputs.items()}
+
+    with torch.no_grad():
+        outputs = modelo(**inputs)
+        logits = outputs.logits
+        probs = torch.softmax(logits, dim=1)
+    return probs.cpu().numpy()
+
+explainer = LimeTextExplainer(class_names=tacticas)
+
+
 # Analizar archivos
-def analizar_archivos(archivo):
+
+def analizar_archivos(archivo, explicacion=False):
+    max_length_tokens = 512
     with open(archivo, "r", encoding="utf-8", errors="ignore") as f:
         contenido = f.read()
 
-    inputs = tokenizer(contenido, return_tensors="pt", truncation=True)
-    inputs = {k: v.to(device) for k, v in inputs.items()}
+    if not contenido or contenido.strip() == "":
+        print(f"[{archivo}] -> Archivo vacío.")
+        return None
+
+    # Tokeniza y recorta el texto si es muy largo
+    tokens = tokenizer.tokenize(contenido)
+    if len(tokens) > max_length_tokens:
+        tokens = tokens[:max_length_tokens]
+        contenido = tokenizer.convert_tokens_to_string(tokens)
+
+    inputs = tokenizer(contenido, return_tensors="pt", padding=True, truncation=True).to(device)
     outputs = modelo(**inputs)
     logits = outputs.logits
     predicciones = torch.softmax(logits, dim=1)
     indice_predicho = torch.argmax(predicciones, dim=1).item()
 
-    if predicciones[0][indice_predicho] < 0.9:  # umbral de confianza
+    if predicciones[0][indice_predicho] < 0.9:
         return None
+
+    if explicacion:
+        try:
+            exp = explainer.explain_instance(
+                contenido,
+                explicabilidad,
+                num_features=10,
+                num_samples=50
+            )
+            exp.save_to_file(f"{archivo}_exp.html")
+        except ValueError as e:
+            print(f"[{archivo}] -> Error al generar explicación: {e}")
+
     return tacticas[indice_predicho]
 
 # Ejecución principal
@@ -77,7 +117,7 @@ def analizar_sistema():
     conteo_tacticas = Counter()
 
     for archivo in tqdm(archivos, desc="Analizando archivos"):
-        resultado = analizar_archivos(archivo)
+        resultado = analizar_archivos(archivo, explicacion=True)
 
         if resultado:
             print(f"[{archivo}] -> Táctica detectada: {resultado}.")
@@ -102,3 +142,47 @@ def analizar_sistema():
 
 if __name__ == "__main__":
     analizar_sistema()
+
+
+
+# def analizar_archivos(archivo):
+#     with open(archivo, "r", encoding="utf-8", errors="ignore") as f:
+#         contenido = f.read()
+
+#     inputs = tokenizer(contenido, return_tensors="pt", truncation=True)
+#     inputs = {k: v.to(device) for k, v in inputs.items()}
+#     outputs = modelo(**inputs)
+#     logits = outputs.logits
+#     predicciones = torch.softmax(logits, dim=1)
+#     indice_predicho = torch.argmax(predicciones, dim=1).item()
+
+#     if predicciones[0][indice_predicho] < 0.9:  # umbral de confianza
+#         return None
+#     return tacticas[indice_predicho]
+
+
+# def analizar_archivos(archivo, explicacion):
+#     with open(archivo, "r", encoding="utf-8", errors="ignore") as f:
+#         contenido = f.read()
+
+#     # if explicacion:
+#     #     exp = explainer.explain_instance(contenido, explicabilidad, num_features=10, num_samples=50)
+#     #     exp.save_to_file(f"{archivo}_exp.html")
+#     #     print(f"Explicacion generada en {archivo}_exp.html")
+
+#     inputs = tokenizer(contenido, return_tensors="pt", truncation=True, max_length=512)
+#     inputs = {k: v.to(device) for k, v in inputs.items()}
+#     outputs = modelo(**inputs)
+#     logits = outputs.logits
+#     predicciones = torch.softmax(logits, dim=1)
+#     indice_predicho = torch.argmax(predicciones, dim=1).item()
+
+#     if predicciones[0][indice_predicho] < 0.9:
+#         return None
+    
+#     if explicacion:
+#         exp = explainer.explain_instance(contenido, explicabilidad, num_features=10, num_samples=50)
+#         exp.save_to_file(f"{archivo}_exp.html")
+#         print(f"Explicacion generada en {archivo}_exp.html")
+
+#     return tacticas[indice_predicho]
