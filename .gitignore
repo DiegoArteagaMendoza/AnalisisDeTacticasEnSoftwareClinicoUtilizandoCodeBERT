@@ -1,0 +1,12 @@
+venv/
+
+PruebaCodeBert/__pycache__/
+
+PruebaCodeBert/repositorio_openemr/
+PruebaCodeBert/Resultados prueba/
+
+# EntrenamientoCodeBert/data/
+# EntrenamientoCodeBert/__pycache__/
+# EntrenamientoCodeBert/results10epocas/
+# EntrenamientoCodeBert/results5epocas/
+EntrenamientoCodeBert/
