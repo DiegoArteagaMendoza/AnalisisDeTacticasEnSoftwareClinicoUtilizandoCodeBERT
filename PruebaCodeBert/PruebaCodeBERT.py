@@ -69,7 +69,6 @@ explainer = LimeTextExplainer(class_names=tacticas)
 
 
 # Analizar archivos
-
 def analizar_archivos(archivo, explicacion=False):
     max_length_tokens = 512
     with open(archivo, "r", encoding="utf-8", errors="ignore") as f:
