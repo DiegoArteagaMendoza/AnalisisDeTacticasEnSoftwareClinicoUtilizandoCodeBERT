@@ -102,7 +102,9 @@ def analizar_archivos(archivo, explicacion=False):
                 num_features=10,
                 num_samples=50
             )
-            exp.save_to_file(f"{archivo}_exp.html")
+            os.makedirs("explicaciones", exist_ok=True)
+            nombre_archivo = os.path.basename(archivo).replace("/", "_").replace("\\", "_")
+            exp.save_to_file(f"explicaciones/{nombre_archivo}_exp.html")
         except ValueError as e:
             print(f"[{archivo}] -> Error al generar explicación: {e}")
 
