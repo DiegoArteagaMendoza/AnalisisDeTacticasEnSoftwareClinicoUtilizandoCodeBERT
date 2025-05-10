@@ -1,9 +1,10 @@
 venv/
 
-PruebaCodeBert/__pycache__/
-
 PruebaCodeBert/repositorio_openemr/
-PruebaCodeBert/checkpoint-5420
+PruebaCodeBert/checkpoint-5420/
 
-PruebaCodeBert/explicaciones-prueba-lime
-PruebaCodeBert/explicabilidad pdf y pngs
+PruebaCodeBert/explicaciones-prueba-lime/
+PruebaCodeBert/explicabilidad pdf y pngs/
+
+modelo/model.safetensors
+modelo/optimizer.pt
