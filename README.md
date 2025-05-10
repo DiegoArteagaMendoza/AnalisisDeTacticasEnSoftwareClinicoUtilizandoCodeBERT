@@ -1,14 +1,24 @@
-Utilizar entorno virtual, con python 3.9.13 <br>
+ # Requisitos y Configuración
 
-Se entreno utilizando rtx 3050 6gb <br>
+- Utilizar un **entorno virtual** con Python **3.9.13**  
+- El modelo fue entrenado localmente utilizando una **RTX 3050 de 6GB**
 
-en caso de que al instalar requirements.txt se produza un error con las librerias de torch, aplicar comando correspondietne para instalar torch, torchaudio y torchvision segun corresponda <br>
+## Instalación de dependencias
 
-Comando utilizado en local: pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 -f https://download.pytorch.org/whl/torch_stable.html <br>
+Al instalar las dependencias desde `requirements.txt`, puede ocurrir un error relacionado con las librerías de `torch`. En ese caso, se recomienda instalar manualmente las versiones compatibles de `torch`, `torchvision` y `torchaudio` según tu entorno CUDA.
 
-debido al porte del modelo es necesario descargar 2 elementos: <br>
- <li>
-    <ul>1. model.safetensors</ul>
-    <ul>2. optimizer.pt</ul>
-    <ul>https://drive.google.com/drive/folders/1mXOTvICQqAnh4yiTzzZupZyvu5IkMKLb?usp=sharing</ul>
- </li>
+### Comando utilizado en entorno local (CUDA 11.8):
+
+```bash
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 -f https://download.pytorch.org/whl/torch_stable.html
+
+
+## Archivos necesarios
+
+Debido al tamaño del modelo, es necesario descargar los siguientes archivos:
+
+- `model.safetensors`
+- `optimizer.pt`
+
+Puedes encontrarlos en el siguiente enlace de Google Drive:  
+🔗 [Descargar modelo y optimizador](https://drive.google.com/drive/folders/1mXOTvICQqAnh4yiTzzZupZyvu5IkMKLb?usp=sharing)
