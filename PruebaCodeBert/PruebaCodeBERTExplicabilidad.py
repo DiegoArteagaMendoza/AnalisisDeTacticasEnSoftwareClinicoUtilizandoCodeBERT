@@ -16,7 +16,7 @@ REPO_DIR = "repositorio_openemr"
 PDF_OUTPUT = "explicabilidad_reporte.pdf"
 
 # Modelo y tokenizer
-MODEL_DIR = "../EntrenamientoCodeBert/results10epocas/checkpoint-5420"
+MODEL_DIR = "checkpoint-5420"
 MODEL_NAME = "microsoft/codebert-base"
 
 # Lista de tácticas (clases)

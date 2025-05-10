@@ -3,12 +3,9 @@ venv/
 PruebaCodeBert/__pycache__/
 
 PruebaCodeBert/repositorio_openemr/
-PruebaCodeBert/Resultados prueba/
+PruebaCodeBert/checkpoint-5420
 
-# EntrenamientoCodeBert/data/
-# EntrenamientoCodeBert/__pycache__/
-# EntrenamientoCodeBert/results10epocas/
-# EntrenamientoCodeBert/results5epocas/
 EntrenamientoCodeBert/
 
 PruebaCodeBert/explicaciones-prueba-lime
+PruebaCodeBert/explicabilidad pdf y pngs
