@@ -11,9 +11,9 @@ Al instalar las dependencias desde `requirements.txt`, puede ocurrir un error re
 
 ```bash
 pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 -f https://download.pytorch.org/whl/torch_stable.html
+```
 
-
-## Archivos necesarios
+### Archivos necesarios
 
 Debido al tamaño del modelo, es necesario descargar los siguientes archivos:
 
