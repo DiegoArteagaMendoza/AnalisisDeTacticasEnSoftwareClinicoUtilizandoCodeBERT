@@ -19,7 +19,7 @@ def clonar_repositorio(url, directorio_destino):
 clonar_repositorio("https://github.com/openemr/openemr.git", "repositorio_openemr")
 
 # Cargar modelo y tokenizador
-modelo_entrenado = "../EntrenamientoCodeBert/results10epocas/checkpoint-5420"
+modelo_entrenado = "../modelo"
 print("¿Directorio del modelo existe?", os.path.isdir(modelo_entrenado))
 
 tokenizer = AutoTokenizer.from_pretrained("microsoft/codebert-base")
